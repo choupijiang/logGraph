@@ -19,49 +19,50 @@ ui <-    fluidPage(
     includeCSS("json-viewer/jquery.json-viewer.css")
     # tags$script(src ="json-viewer/jquery.json-viewer.js"),
     # tags$link( href="json-viewer/jquery.json-viewer.css", rel="stylesheet")
+    
   ),
-  sidebarLayout(
-    position = "right",
-    sidebarPanel(
-      selectInput("request_path", "request_path", choices = apis),
-      checkboxInput("schema", "show schema?", FALSE),
-      hr(),
-      
-      helpText("Data from SenseId log."),
-      width = 4
+  
+  fluidRow(
+    column(4,
+           wellPanel(
+             selectInput("request_path", "request_path", choices = apis),
+             checkboxInput("schema", "show schema?", FALSE),
+             hr(),
+             
+             helpText("Data from SenseId log.")
+           ),
+           HTML("<pre id='json-render'></pre>")
     ),
-    mainPanel(
-      visNetworkOutput("network", height = "600px"),
-      verbatimTextOutput("sample"),
-      HTML("
-           <pre id='json-render'></pre>
-           
-           ")
-      
-      )
-    ),
+    
+    column(8,
+           visNetworkOutput("network", height = "600px"),
+           verbatimTextOutput("sample")
+          
+    )
+    
+  ),
   HTML(
     "
     <script type='text/javascript'>
     $('#json-render').click(function(){
-      try {
-        var v = eval($('#sample').text());
-      }
-        catch (error) {
-        return alert('Cannot eval JSON: ' + error);
-      }
-      var options = {
-        collapsed: $('#collapsed').is(':checked'),
-        rootCollapsable: $('#root-collapsable').is(':checked'),
-        withQuotes: $('#with-quotes').is(':checked'),
-        withLinks: $('#with-links').is(':checked')
-      };
-      $('#json-render').jsonViewer(v, {
-        collapsed: true,
-        rootCollapsable: false,
-         withQuotes: false,
-        withLinks: false
-      });
+    try {
+    var v = eval($('#sample').text());
+    }
+    catch (error) {
+    return alert('Cannot eval JSON: ' + error);
+    }
+    var options = {
+    collapsed: $('#collapsed').is(':checked'),
+    rootCollapsable: $('#root-collapsable').is(':checked'),
+    withQuotes: $('#with-quotes').is(':checked'),
+    withLinks: $('#with-links').is(':checked')
+    };
+    $('#json-render').jsonViewer(v, {
+    collapsed: false,
+    rootCollapsable: false,
+    withQuotes: false,
+    withLinks: false
+    });
     
     })
     </script>
@@ -71,7 +72,7 @@ ui <-    fluidPage(
     }
     </style>"
   )
-    )
+)
 
 server <- function(input, output, session) {
   observe({
