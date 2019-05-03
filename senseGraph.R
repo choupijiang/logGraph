@@ -12,7 +12,19 @@ apis <- unique(c(data$api))
 
 ui <-    fluidPage(
   theme = "bootstrap.css",
-  titlePanel("message graph of senseID log"),
+  tags$head(
+    tags$style(HTML("
+                    @import url('//fonts.googleapis.com/css?family=Lobster|Cabin:400,700');
+                    
+                    h1 {
+                    font-family: 'Lobster', cursive;
+                    font-weight: 500;
+                    line-height: 1.1;
+                    } 
+                    ")
+     )
+  ),
+  headerPanel("MESSAGE GRAPH of senseID LOG"), 
   tags$head(
     # tags$script(src = 'https://code.jquery.com/jquery-1.11.1.min.js')
     includeScript("json-viewer/jquery.json-viewer.js"),
