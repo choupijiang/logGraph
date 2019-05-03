@@ -32,15 +32,19 @@ ui <-    fluidPage(
       hr(),
       conditionalPanel(
         condition = "input.schema == true",
+        HTML("<label>double click to change shema</label>")
+      ),
+      conditionalPanel(
+        condition = "input.schema == true",
         HTML(
           "
-          <label>double click change schema</label>
-          <pre id='json-render'></pre>
+          <div style='height:500px;overflow:scroll;overflow-x:hidden;overflow-y:scroll;'>
+          <pre id='json-render' style='height:500px;'></pre>
+          </div>
           "
         )
-        )
-      
-        ),
+      )
+    ),
     
     column(
       8,
