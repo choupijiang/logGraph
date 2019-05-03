@@ -23,60 +23,62 @@ ui <-    fluidPage(
   ),
   
   fluidRow(
-    column(4,
-           wellPanel(
-             selectInput("request_path", "request_path", choices = apis),
-             checkboxInput("schema", "show schema?", FALSE),
-             hr(),
-             
-             helpText("Data from SenseId log.")
-           ),
-           HTML("<pre id='json-render'></pre>")
-    ),
+    column(
+      4,
+      wellPanel(
+        selectInput("request_path", "request_path", choices = apis),
+        checkboxInput("schema", "show schema?", FALSE)
+      ),
+      hr(),
+      conditionalPanel(
+        condition = "input.schema == true",
+        HTML(
+          "
+          <label>double click change schema</label>
+          <pre id='json-render'></pre>
+          "
+        )
+        )
+      
+        ),
     
-    column(8,
-           visNetworkOutput("network", height = "600px"),
-           verbatimTextOutput("sample")
-          
+    column(
+      8,
+      visNetworkOutput("network", height = "800px"),
+      verbatimTextOutput("sample")
     )
     
-  ),
+      ),
   HTML(
     "
     <script type='text/javascript'>
-    $('#json-render').click(function(){
-    try {
-    var v = eval($('#sample').text());
-    }
-    catch (error) {
-    return alert('Cannot eval JSON: ' + error);
-    }
-    var options = {
-    collapsed: $('#collapsed').is(':checked'),
-    rootCollapsable: $('#root-collapsable').is(':checked'),
-    withQuotes: $('#with-quotes').is(':checked'),
-    withLinks: $('#with-links').is(':checked')
-    };
-    $('#json-render').jsonViewer(v, {
-    collapsed: false,
-    rootCollapsable: false,
-    withQuotes: false,
-    withLinks: false
-    });
-    
-    })
+      $('#json-render').dblclick(function(){
+        try {
+          var v = eval($('#sample').text());
+        }
+        catch (error) {
+          // return alert('Cannot eval JSON: ' + error +$('#sample').text());
+        }
+        $('#json-render').jsonViewer(v, {
+          collapsed: false,
+          rootCollapsable: false,
+          withQuotes: false,
+          withLinks: false
+        });
+        
+      })
     </script>
     <style type='text/css'>
-    #sample {
-    visibility:hidden;
-    }
+      #sample {
+        visibility:hidden;
+      }
     </style>"
   )
-)
+  )
 
 server <- function(input, output, session) {
   observe({
-    myDataSet <- data[data$api == input$request_path,]
+    myDataSet <- data[data$api == input$request_path, ]
     messages <- unique(c(myDataSet$from, myDataSet$to))
     
     output$network <- renderVisNetwork({
@@ -100,16 +102,13 @@ server <- function(input, output, session) {
                   Shiny.onInputChange('current_node_id', nodes);
                   ;}")
   })
-   
     output$sample <-  renderPrint({
-      df <- data.frame(id = 1:2, val = rnorm(2))
+      df <- data.frame(id = c("name"),
+                       val = input$current_node_id$node)
       js <- to_json(df)
-      # pretty_json(js)
-      # input$current_node_id
       js
     })
-    
   })
-  }
+}
 
 shinyApp(ui, server)
