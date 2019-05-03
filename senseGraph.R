@@ -32,7 +32,7 @@ ui <-    fluidPage(
       hr(),
       conditionalPanel(
         condition = "input.schema == true",
-        HTML("<label>double click to change shema</label>")
+        HTML("<b>schemas of this message</b>")
       ),
       conditionalPanel(
         condition = "input.schema == true",
@@ -56,7 +56,7 @@ ui <-    fluidPage(
   HTML(
     "
     <script type='text/javascript'>
-      $('#json-render').dblclick(function(){
+      $('#sample').bind('DOMSubtreeModified',function(){
         try {
           var v = eval($('#sample').text());
         }
@@ -114,5 +114,4 @@ server <- function(input, output, session) {
     })
   })
 }
-
 shinyApp(ui, server)
